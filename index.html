@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Flip Card Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="flip-container" id="flipContainer">
+    <div class="flip-icon" id="flipIcon">
+      <i class="fas fa-sync-alt"></i>
+    </div>
+    
+    <!-- Front Card - Signup -->
+    <div class="card card-front">
+      <div class="header">
+        <h1><i class="fas fa-user-plus"></i> Create Account</h1>
+        <p class="subtitle">Join our community today</p>
+      </div>
+      
+      <div class="form-container">
+        <form id="signupForm">
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="name" placeholder="Full Name" required />
+            <span class="floating-label">Full Name</span>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-birthday-cake"></i>
+            <input type="number" id="age" placeholder="Age" required min="13" max="120" />
+            <span class="floating-label">Age</span>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" id="location" placeholder="Location" required />
+            <span class="floating-label">Location</span>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email Address" required />
+            <span class="floating-label">Email Address</span>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="phone" placeholder="Phone Number" required />
+            <span class="floating-label">Phone Number</span>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Create Password" required />
+            <span class="floating-label">Create Password</span>
+            <div class="password-strength">
+              <div class="strength-meter" id="strengthMeter"></div>
+            </div>
+            <div class="password-info" id="passwordInfo">Use 8+ characters with mix of letters, numbers & symbols</div>
+          </div>
+          
+          <button type="submit">
+            <i class="fas fa-user-check"></i> Sign Up Now
+          </button>
+        </form>
+        
+        <p id="message" class="message"></p>
+        
+        <div class="form-footer">
+          <p>Already have an account? <a href="#" id="loginLink">Sign In</a></p>
+          <p>By signing up, you agree to our <a href="#">Terms & Privacy</a></p>
+        </div>
+      </div>
+      <div class="flip-hint">Click the sync icon to flip to login</div>
+    </div>
+    
+    <!-- Back Card - Login -->
+    <div class="card card-back">
+      <div class="header">
+        <h1><i class="fas fa-sign-in-alt"></i> Welcome Back!</h1>
+        <p class="subtitle">Sign in to your account</p>
+      </div>
+      
+      <div class="form-container">
+        <form id="loginForm">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="loginName" placeholder="Full Name" required />
+                <span class="floating-label">Full Name</span>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="loginEmail" placeholder="Email Address" required />
+            <span class="floating-label">Email Address</span>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="Password" required />
+            <span class="floating-label">Password</span>
+            
+          </div>
+          
+          <div class="form-footer">
+            <p><a href="#">Forgot password?</a></p>
+          </div>
+          
+          <button type="submit">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </button>
+        </form>
+        
+        <p id="loginMessage" class="message"></p>
+        
+        <div class="form-footer">
+          <p>Don't have an account? <a href="#" id="signupLink">Sign Up</a></p>
+          <p>By signing in, you agree to our <a href="#">Terms & Privacy</a></p>
+        </div>
+      </div>
+      <div class="flip-hint">Click the sync icon to flip back</div>
+    </div>
+  </div>
+
+  <script>
+    // Flip functionality
+    const flipContainer = document.getElementById('flipContainer');
+    const flipIcon = document.getElementById('flipIcon');
+    const loginLink = document.getElementById('loginLink');
+    const signupLink = document.getElementById('signupLink');
+    
+    flipIcon.addEventListener('click', flipCard);
+    loginLink.addEventListener('click', flipCard);
+    signupLink.addEventListener('click', flipCard);
+    
+    function flipCard(e) {
+      e.preventDefault();
+      flipContainer.classList.toggle('flipped');
+    }
+    
+    // Password strength indicator
+    document.getElementById('password').addEventListener('input', function(e) {
+      const password = e.target.value;
+      const strengthMeter = document.getElementById('strengthMeter');
+      const passwordInfo = document.getElementById('passwordInfo');
+      
+      // Reset classes
+      strengthMeter.className = 'strength-meter';
+      
+      if (password.length === 0) {
+        strengthMeter.style.width = '0';
+        passwordInfo.textContent = 'Use 8+ characters with mix of letters, numbers & symbols';
+        passwordInfo.style.color = '#666666';
+        return;
+      }
+      
+      // Calculate strength
+      let strength = 0;
+      
+      // Length check
+      if (password.length >= 8) strength++;
+      if (password.length >= 12) strength++;
+      
+      // Character variety
+      if (/[A-Z]/.test(password)) strength++;
+      if (/\d/.test(password)) strength++;
+      if (/[^A-Za-z0-9]/.test(password)) strength++;
+      
+      // Update UI
+      strengthMeter.classList.add(`strength-${Math.min(strength, 4)}`);
+      
+      // Update text
+      switch(strength) {
+        case 0:
+        case 1:
+          passwordInfo.textContent = 'Weak password - try adding more characters or variety';
+          passwordInfo.style.color = '#dc3545';
+          break;
+        case 2:
+        case 3:
+          passwordInfo.textContent = 'Medium password - good but could be stronger';
+          passwordInfo.style.color = '#ffc107';
+          break;
+        case 4:
+        case 5:
+          passwordInfo.textContent = 'Strong password - excellent!';
+          passwordInfo.style.color = '#28a745';
+          break;
+      }
+    });
+
+    // Form submission for signup
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const age = document.getElementById("age").value;
+      const location = document.getElementById("location").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const password = document.getElementById("password").value;
+      const x = { name, age, location, email, phone, password };
+      const msg = document.getElementById("message");
+      try {
+        const response = await fetch("http://localhost:3000/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(x)
+        });
+        const data = await response.json();
+        msg.innerText = data.message;
+        msg.classList.add("show");
+        if (data.message?.startsWith("Signup successful,")) {
+          msg.classList.add("success");
+          msg.classList.remove("error");
+        } else {
+          msg.classList.add("error");
+          msg.classList.remove("success");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        msg.innerText = "Something went wrong.";
+        msg.classList.add("show", "error");
+        msg.classList.remove("success");
+      }
+    });
+    
+    // Form submission for login
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const loginName = document.getElementById("loginName").value;
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      
+      const x = { loginName, email, password };
+      const msg = document.getElementById("loginMessage");
+      try {
+        const response = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(x)
+        });
+        const data = await response.json();
+        msg.innerText = data.message;
+        msg.classList.add("show");
+        if (data.message?.startsWith("Login successful,")) {
+          msg.classList.add("success");
+          msg.classList.remove("error");
+        } else {
+          msg.classList.add("error");
+          msg.classList.remove("success");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        msg.innerText = "Something went wrong.";
+        msg.classList.add("show", "error");
+        msg.classList.remove("success");
+      }
+
+    });
+
+  </script>
+</body>
+</html>
